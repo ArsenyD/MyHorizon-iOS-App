@@ -10,9 +10,22 @@
 		7F16017E2D2962AF00CCACEA /* MyHorizon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyHorizon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7F37F5BC2D32ABA4008FBA13 /* Exceptions for "MyHorizon" folder in "MyHorizon" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7F16017D2D2962AF00CCACEA /* MyHorizon */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7F1601802D2962AF00CCACEA /* MyHorizon */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7F37F5BC2D32ABA4008FBA13 /* Exceptions for "MyHorizon" folder in "MyHorizon" target */,
+			);
 			path = MyHorizon;
 			sourceTree = "<group>";
 		};
@@ -256,8 +269,10 @@
 				DEVELOPMENT_TEAM = W88579NAWQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyHorizon/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "My Horizon";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs to get acces to your workouts in order to properly display data.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -293,8 +308,10 @@
 				DEVELOPMENT_TEAM = W88579NAWQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyHorizon/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "My Horizon";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs to get acces to your workouts in order to properly display data.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
