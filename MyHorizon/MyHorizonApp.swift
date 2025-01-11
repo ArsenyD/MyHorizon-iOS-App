@@ -1,10 +1,3 @@
-//
-//  MyHorizonApp.swift
-//  MyHorizon
-//
-//  Created by Арсений Дунаев on 4/1/25.
-//
-
 import SwiftUI
 
 @main
