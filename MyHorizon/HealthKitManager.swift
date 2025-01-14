@@ -7,8 +7,8 @@ private let logger = Logger(subsystem: "com.ArsenyD.MyHorizon", category: "Healt
 
 @Observable
 class HealthKitManager {
-    var healthStore: HKHealthStore?
-    private let requestedHKTypes: Set = [
+    private var healthStore: HKHealthStore?
+    private let requiredHKTypes: Set = [
         HKQuantityType.workoutType()
     ]
     
@@ -22,7 +22,7 @@ class HealthKitManager {
             Task {
                 do {
                     logger.log("Requesting authorization for health data.")
-                    try await healthStore?.requestAuthorization(toShare: [], read: requestedHKTypes)
+                    try await healthStore?.requestAuthorization(toShare: [], read: requiredHKTypes)
                 } catch {
                     fatalError("Authorization Request Failed")
                 }
