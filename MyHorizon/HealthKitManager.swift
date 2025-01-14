@@ -12,6 +12,33 @@ class HealthKitManager {
         HKQuantityType.workoutType()
     ]
     
+    var latestWalks: [HKSample] = []
+    
+    // W.I.P
+    func getLatestWalks() async {
+        guard let store = healthStore else { return }
+        
+        let onlyWalkWorkoutsPredicate = HKQuery.predicateForWorkouts(with: .walking)
+        
+        let query = HKSampleQueryDescriptor(
+            predicates: [.sample(type: .workoutType(), predicate: onlyWalkWorkoutsPredicate)],
+            sortDescriptors: [SortDescriptor(
+                \.endDate,
+                 order: .reverse
+            )],
+            limit: nil
+        )
+        
+        do {
+            let results = try await query.result(for: store)
+            logger.log("Got \(results.count) results for the query")
+            latestWalks = results
+            logger.log("\(self.latestWalks.first)")
+        } catch {
+            logger.warning("Query failed")
+        }
+    }
+    
     init() {
         logger.log("initializing HealthKitManager")
         

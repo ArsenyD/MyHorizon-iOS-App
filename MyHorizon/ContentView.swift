@@ -13,6 +13,9 @@ struct ContentView: View {
                 WorkoutMap()
             }
         }
+        .task {
+            await healthKitManager.getLatestWalks()
+        }
     }
 }
 
