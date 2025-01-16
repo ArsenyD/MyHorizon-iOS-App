@@ -6,7 +6,7 @@ struct WourkoutHistory: View {
     var body: some View {
         List {
             ForEach(healthKitManager.walkWorkouts, id: \.self) { walkSession in
-                WorkoutEntry(distance: walkSession.measuredDistanceWalkingRunning)
+                WorkoutEntry(distance: walkSession.measuredDistanceWalkingRunning, date: walkSession.endDate)
             }
         }
         .listStyle(.plain)

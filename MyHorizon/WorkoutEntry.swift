@@ -2,22 +2,23 @@ import SwiftUI
 
 struct WorkoutEntry: View {
     let distance: Measurement<UnitLength>?
+    let date: Date
     private var distanceFormatted: String {
         guard let distance else { return "N/A" }
         
-        return distance.formatted()
+        return distance.formatted().uppercased()
     }
     
     var body: some View {
         HStack(alignment: .bottom) {
-            icon
-            description
+            iconComponent
+            descriptionComponent
             Spacer()
-            date
+            dateComponent
         }
     }
     
-    var icon: some View {
+    var iconComponent: some View {
         Image(systemName: "figure.walk")
             .imageScale(.large)
             .padding(13)
@@ -26,7 +27,7 @@ struct WorkoutEntry: View {
             .foregroundStyle(.green)
     }
     
-    var description: some View {
+    var descriptionComponent: some View {
         VStack(alignment: .leading) {
             Text("Outdoor Walk")
             Text(distanceFormatted)
@@ -36,13 +37,13 @@ struct WorkoutEntry: View {
         }
     }
     
-    var date: some View {
-        Text("Yesteraday")
+    var dateComponent: some View {
+        Text(date, format: .dateTime)
             .font(.caption)
             .foregroundStyle(.secondary)
     }
 }
 
 #Preview {
-    WorkoutEntry(distance: .previewValue)
+    WorkoutEntry(distance: .previewValue, date: Date())
 }

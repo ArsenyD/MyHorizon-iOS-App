@@ -29,7 +29,7 @@ class HealthKitManager {
                 \.endDate,
                  order: .reverse
             )],
-            limit: 10
+            limit: nil
         )
         
         do {
