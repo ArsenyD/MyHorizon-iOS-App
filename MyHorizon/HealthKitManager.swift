@@ -12,30 +12,39 @@ class HealthKitManager {
         HKQuantityType.workoutType()
     ]
     
-    var latestWalks: [HKSample] = []
+    var walkWorkouts: [HKWorkout] = []
     
     // W.I.P
-    func getLatestWalks() async {
-        guard let store = healthStore else { return }
+    func retrieveWalkWorkouts() async {
+        guard let store = healthStore else {
+            logger.warning("healthStore is nil. Terminating `retrieveWalkWorkouts()` method ")
+            return
+        }
         
-        let onlyWalkWorkoutsPredicate = HKQuery.predicateForWorkouts(with: .walking)
+        let onlyWalkWorkouts = HKQuery.predicateForWorkouts(with: .walking)
         
         let query = HKSampleQueryDescriptor(
-            predicates: [.sample(type: .workoutType(), predicate: onlyWalkWorkoutsPredicate)],
+            predicates: [.sample(type: .workoutType(), predicate: onlyWalkWorkouts)],
             sortDescriptors: [SortDescriptor(
                 \.endDate,
                  order: .reverse
             )],
-            limit: nil
+            limit: 10
         )
         
         do {
             let results = try await query.result(for: store)
-            logger.log("Got \(results.count) results for the query")
-            latestWalks = results
-            logger.log("\(self.latestWalks.first)")
+            logger.log("Got \(results.count) results for the query.")
+            
+            guard let walks = results as? [HKWorkout] else {
+                logger.warning("Type Casting from [HKSample] to [HKWorkout] failed. No results will be returned.")
+                return
+            }
+            
+            walkWorkouts = walks
+            
         } catch {
-            logger.warning("Query failed")
+            logger.warning("Query failed. No results will be returned.")
         }
     }
     

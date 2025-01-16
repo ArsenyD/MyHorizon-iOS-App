@@ -14,7 +14,7 @@ struct ContentView: View {
             }
         }
         .task {
-            await healthKitManager.getLatestWalks()
+            await healthKitManager.retrieveWalkWorkouts()
         }
     }
 }
