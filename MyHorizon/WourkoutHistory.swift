@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct WourkoutHistory: View {
+    @Environment(HealthKitManager.self) var healthKitManager
+    
     var body: some View {
         List {
-            ForEach(0..<10) { _ in
-                WorkoutEntry()
-                    .listRowSeparator(.hidden)
+            ForEach(healthKitManager.walkWorkouts, id: \.self) { walkSession in
+                WorkoutEntry(distance: walkSession.measuredDistanceWalkingRunning)
             }
         }
         .listStyle(.plain)
@@ -14,4 +15,5 @@ struct WourkoutHistory: View {
 
 #Preview {
     WourkoutHistory()
+        .environment(HealthKitManager())
 }

@@ -1,6 +1,13 @@
 import SwiftUI
 
 struct WorkoutEntry: View {
+    let distance: Measurement<UnitLength>?
+    private var distanceFormatted: String {
+        guard let distance else { return "N/A" }
+        
+        return distance.formatted()
+    }
+    
     var body: some View {
         HStack(alignment: .bottom) {
             icon
@@ -22,7 +29,7 @@ struct WorkoutEntry: View {
     var description: some View {
         VStack(alignment: .leading) {
             Text("Outdoor Walk")
-            Text("10.00KM")
+            Text(distanceFormatted)
                 .bold()
                 .foregroundStyle(.green)
                 .font(.title2)
@@ -37,5 +44,5 @@ struct WorkoutEntry: View {
 }
 
 #Preview {
-    WorkoutEntry()
+    WorkoutEntry(distance: .previewValue)
 }
