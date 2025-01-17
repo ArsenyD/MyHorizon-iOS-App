@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct WorkoutEntry: View {
+struct WorkoutRow: View {
     let distance: Measurement<UnitLength>?
     let date: Date
     private var distanceFormatted: String {
@@ -45,5 +45,5 @@ struct WorkoutEntry: View {
 }
 
 #Preview {
-    WorkoutEntry(distance: .previewValue, date: Date())
+    WorkoutRow(distance: .previewValue, date: Date())
 }

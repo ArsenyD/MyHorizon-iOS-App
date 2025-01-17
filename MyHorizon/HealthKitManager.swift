@@ -14,7 +14,6 @@ class HealthKitManager {
     
     var walkWorkouts: [HKWorkout] = []
     
-    // W.I.P
     func retrieveWalkWorkouts() async {
         guard let store = healthStore else {
             logger.warning("healthStore is nil. Terminating `retrieveWalkWorkouts()` method ")
@@ -34,7 +33,7 @@ class HealthKitManager {
         
         do {
             let results = try await query.result(for: store)
-            logger.log("Got \(results.count) results for the query.")
+            logger.log("Got \(results.count) results for 'retrieveWalkWorkouts' query.")
             
             guard let walks = results as? [HKWorkout] else {
                 logger.warning("Type Casting from [HKSample] to [HKWorkout] failed. No results will be returned.")
@@ -44,7 +43,7 @@ class HealthKitManager {
             walkWorkouts = walks
             
         } catch {
-            logger.warning("Query failed. No results will be returned.")
+            logger.warning("'retrieveWalkWorkouts' Query failed. No results will be returned.")
         }
     }
     
