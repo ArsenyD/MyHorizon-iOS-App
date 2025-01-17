@@ -6,9 +6,9 @@ struct WourkoutHistory: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(healthKitManager.walkWorkouts, id: \.self) { walkSession in
+                ForEach(healthKitManager.walkWorkouts) { walkSession in
                     NavigationLink {
-                        WorkoutDetailView()
+                        WorkoutDetailView(workout: walkSession)
                     } label: {
                         WorkoutRow(distance: walkSession.measuredDistanceWalkingRunning, date: walkSession.endDate)
                     }
