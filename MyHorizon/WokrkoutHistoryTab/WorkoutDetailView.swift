@@ -32,7 +32,7 @@ struct WorkoutDetailView: View {
                 }
                 
                 VStack(alignment: .leading) {
-                    Text("15:08 - 18:50")
+                    Text("\(workout.startDate.formatted(date: .omitted, time: .shortened))—\(workout.endDate.formatted(date: .omitted, time: .shortened))")
                     Label("Saint Petersburg", systemImage: "location.fill")
                 }
                 .imageScale(.small)

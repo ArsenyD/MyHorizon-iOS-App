@@ -33,7 +33,7 @@ struct WorkoutRow: View {
     }
     
     var dateComponent: some View {
-        Text(date, format: .dateTime)
+        Text(date.formatted(date: .numeric, time: .omitted))
             .font(.caption)
             .foregroundStyle(.secondary)
     }
