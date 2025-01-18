@@ -2,7 +2,7 @@ import SwiftUI
 import HealthKit
 
 struct WorkoutDetailView: View {
-//    let workout: HKWorkout
+    let workout: HKWorkout
     
     var body: some View {
         ScrollView {
@@ -85,7 +85,7 @@ struct WorkoutDetailView: View {
     var distance: some View {
         VStack(alignment: .leading) {
             Text("Distance")
-            Text("13.32 KM")
+            Text(workout.measuredDistanceWalkingRunning?.formatted(.walkingDistance).uppercased() ?? "N/A")
                 .foregroundStyle(.blue)
                 .font(.title)
         }
@@ -94,7 +94,7 @@ struct WorkoutDetailView: View {
     var activeCalories: some View {
         VStack(alignment: .leading) {
             Text("Active Calories")
-            Text("789 CAL")
+            Text(workout.measuredActiveCalories?.formatted(.burnedCalories).uppercased() ?? "N/A")
                 .foregroundStyle(.pink)
                 .font(.title)
         }
@@ -103,7 +103,7 @@ struct WorkoutDetailView: View {
     var totalCalories: some View {
         VStack(alignment: .leading) {
             Text("Total Calories")
-            Text("1,133 CAL")
+            Text(workout.measuredTotalCalories?.formatted(.burnedCalories).uppercased() ?? "N/A")
                 .foregroundStyle(.pink)
                 .font(.title)
         }

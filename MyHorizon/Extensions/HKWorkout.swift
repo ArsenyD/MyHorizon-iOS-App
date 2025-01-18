@@ -10,7 +10,19 @@ extension HKWorkout: @retroactive Identifiable {
 extension HKWorkout {
     var measuredDistanceWalkingRunning: Measurement<UnitLength>? {
         guard let double = self.statistics(for: HKQuantityType(.distanceWalkingRunning))?.sumQuantity()?.doubleValue(for: .meterUnit(with: .kilo)) else { return nil }
-        let measurment = Measurement<UnitLength>(value: double, unit: .kilometers)
-        return measurment
+        return .init(value: double, unit: .kilometers)
     }
+    
+    var measuredActiveCalories: Measurement<UnitEnergy>? {
+        guard let double = self.statistics(for: HKQuantityType(.activeEnergyBurned))?.sumQuantity()?.doubleValue(for: .largeCalorie()) else { return nil }
+        return .init(value: double, unit: .kilocalories)
+    }
+    
+    var measuredTotalCalories: Measurement<UnitEnergy>? {
+        guard let restingCaloriesDouble = self.statistics(for: HKQuantityType(.basalEnergyBurned))?.sumQuantity()?.doubleValue(for: .largeCalorie()) else { return nil }
+        guard let activeCaloriesDouble = measuredActiveCalories else { return nil }
+        return .init(value: restingCaloriesDouble + activeCaloriesDouble.value, unit: .kilocalories)
+    }
+    
+    
 }

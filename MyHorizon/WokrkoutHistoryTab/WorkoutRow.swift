@@ -3,11 +3,6 @@ import SwiftUI
 struct WorkoutRow: View {
     let distance: Measurement<UnitLength>?
     let date: Date
-    private var distanceFormatted: String {
-        guard let distance else { return "N/A" }
-        
-        return distance.formatted().uppercased()
-    }
     
     var body: some View {
         HStack(alignment: .bottom) {
@@ -30,7 +25,7 @@ struct WorkoutRow: View {
     var descriptionComponent: some View {
         VStack(alignment: .leading) {
             Text("Outdoor Walk")
-            Text(distanceFormatted)
+            Text(distance?.formatted(.walkingDistance).uppercased() ?? "N/A")
                 .bold()
                 .foregroundStyle(.green)
                 .font(.title2)
