@@ -4,6 +4,14 @@ import HealthKit
 struct WorkoutDetailView: View {
     let workout: HKWorkout
     
+    private var walkDurationFormatted: String {
+        let hours = Int(workout.measuredWalkDuration.converted(to: .hours).value)
+        let minutes = Int(workout.measuredWalkDuration.converted(to: .minutes).value) - hours * 60
+        let seconds = Int(workout.measuredWalkDuration.value) - (minutes * 60) - (hours * 3600)
+        
+        return "\(hours):\(minutes):\(seconds)"
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -76,7 +84,7 @@ struct WorkoutDetailView: View {
     var workoutTime: some View {
         VStack(alignment: .leading) {
             Text("Workout Time")
-            Text("3:41:43")
+            Text(walkDurationFormatted)
                 .foregroundStyle(.yellow)
                 .font(.title)
         }

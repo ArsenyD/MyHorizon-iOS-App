@@ -24,5 +24,7 @@ extension HKWorkout {
         return .init(value: restingCaloriesDouble + activeCaloriesDouble.value, unit: .kilocalories)
     }
     
-    
+    var measuredWalkDuration: Measurement<UnitDuration> {
+        .init(value: self.duration, unit: .seconds)
+    }
 }
