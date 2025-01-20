@@ -18,7 +18,7 @@
 					<key>StartingLineNumber</key>
 					<string>9</string>
 					<key>Timestamp</key>
-					<string>758985789.5913939</string>
+					<string>758986129.658337</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -48,6 +48,53 @@
 			</dict>
 			<key>title</key>
 			<string>Format seconds component to have be padded with 0 if a value less than 10</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>9</string>
+					<key>StartingColumnNumber</key>
+					<string>98</string>
+					<key>StartingLineNumber</key>
+					<string>8</string>
+					<key>Timestamp</key>
+					<string>758986138.282828</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>MyHorizon/WokrkoutHistoryTab/WorkoutDetailView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>    private var walkDurationFormatted: String {
+        let hours = Int(workout.measuredWalkDuration.converted(to: .hours).value)
+        let minutes = Int(workout.measuredWalkDuration.converted(to: .minutes).value) - hours * 60</string>
+				<key>trailing</key>
+				<string>        let seconds = Int(workout.measuredWalkDuration.value) - (minutes * 60) - (hours * 3600)
+        
+        return "\(hours):\(minutes):\(seconds)"
+</string>
+			</dict>
+			<key>title</key>
+			<string>Format minutes component to have be padded with 0 if a value less than 10</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

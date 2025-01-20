@@ -14,9 +14,29 @@ class HealthKitManager {
     
     var walkWorkouts: [HKWorkout] = []
     
+    // W.I.P
+//    func retrieveWorkoutRoute(for workout: HKWorkout) async {
+//        guard let store = healthStore else {
+//            logger.warning("retrieveWorkoutRoute(): healthStore is nil. Returning from the method with no results.")
+//            return
+//        }
+//        
+//        let workoutObjectPredicate = HKQuery.predicateForObjects(from: workout)
+//        
+//        let routeQuery = HKAnchoredObjectQueryDescriptor(predicates: [.workoutRoute(workoutObjectPredicate)], anchor: nil)
+//        
+//        let updateQueue = routeQuery.results(for: store)
+//        
+//        let updateTask = Task {
+//            for try await update in updateQueue {
+//                print(update)
+//            }
+//        }
+//    }
+    
     func retrieveWalkWorkouts() async {
         guard let store = healthStore else {
-            logger.warning("healthStore is nil. Terminating `retrieveWalkWorkouts()` method ")
+            logger.warning("retrieveWalkWorkouts(): healthStore is nil. Returning from the method with no results.")
             return
         }
         
@@ -33,17 +53,17 @@ class HealthKitManager {
         
         do {
             let results = try await query.result(for: store)
-            logger.log("Got \(results.count) results for 'retrieveWalkWorkouts' query.")
+            logger.log("retrieveWalkWorkouts(): Received \(results.count) results for query.")
             
             guard let walks = results as? [HKWorkout] else {
-                logger.warning("Type Casting from [HKSample] to [HKWorkout] failed. No results will be returned.")
+                logger.warning("retrieveWalkWorkouts(): Type Casting from [HKSample] to [HKWorkout] failed. Returning from the method with no results.")
                 return
             }
             
             walkWorkouts = walks
             
         } catch {
-            logger.warning("'retrieveWalkWorkouts' Query failed. No results will be returned.")
+            logger.warning("retrieveWalkWorkouts(): Query failed. Returning from the method with no results.")
         }
     }
     

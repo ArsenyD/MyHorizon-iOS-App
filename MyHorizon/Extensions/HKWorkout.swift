@@ -27,4 +27,9 @@ extension HKWorkout {
     var measuredWalkDuration: Measurement<UnitDuration> {
         .init(value: self.duration, unit: .seconds)
     }
+    
+    var measuredAverageHeartRate: Int? {
+        guard let double = self.statistics(for: .init(.heartRate))?.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min")) else { return nil }
+        return Int(double)
+    }
 }

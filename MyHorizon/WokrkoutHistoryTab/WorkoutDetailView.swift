@@ -12,6 +12,12 @@ struct WorkoutDetailView: View {
         return "\(hours):\(minutes):\(seconds)"
     }
     
+    private var averageHeartRateFormatted: String {
+        guard let measuredHeartRate = workout.measuredAverageHeartRate else { return "N/A" }
+        
+        return "\(measuredHeartRate) BPM"
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -41,7 +47,7 @@ struct WorkoutDetailView: View {
                 
                 VStack(alignment: .leading) {
                     Text("\(workout.startDate.formatted(date: .omitted, time: .shortened))—\(workout.endDate.formatted(date: .omitted, time: .shortened))")
-                    Label("Saint Petersburg", systemImage: "location.fill")
+                    Label("N/A", systemImage: "location.fill")
                 }
                 .imageScale(.small)
                 .font(.callout)
@@ -119,7 +125,7 @@ struct WorkoutDetailView: View {
     var elevationGain: some View {
         VStack(alignment: .leading) {
             Text("Elevation Gain")
-            Text("82 M")
+            Text("N/A")
                 .foregroundStyle(Color(red: 0.651, green: 0.996, blue: 0.478))
                 .font(.title)
         }
@@ -128,7 +134,7 @@ struct WorkoutDetailView: View {
     var averagePace: some View {
         VStack(alignment: .leading) {
             Text("Avg.Pace")
-            Text("16'38\"/KM")
+            Text("N/A")
                 .foregroundStyle(.cyan)
                 .font(.title)
         }
@@ -137,7 +143,7 @@ struct WorkoutDetailView: View {
     var averageHeartRate: some View {
         VStack(alignment: .leading) {
             Text("Avg. Heart Rate")
-            Text("107 BPM")
+            Text(averageHeartRateFormatted)
                 .foregroundStyle(.red)
                 .font(.title)
         }
