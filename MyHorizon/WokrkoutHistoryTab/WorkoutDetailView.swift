@@ -2,6 +2,8 @@ import SwiftUI
 import HealthKit
 
 struct WorkoutDetailView: View {
+    
+    @Environment(HealthKitManager.self) var healthKitManager
     let workout: HKWorkout
     
     private var walkDurationFormatted: String {
@@ -9,7 +11,21 @@ struct WorkoutDetailView: View {
         let minutes = Int(workout.measuredWalkDuration.converted(to: .minutes).value) - hours * 60
         let seconds = Int(workout.measuredWalkDuration.value) - (minutes * 60) - (hours * 3600)
         
-        return "\(hours):\(minutes):\(seconds)"
+        // TODO: - Refactor later
+        let minutesString = minutes < 10 ? String("0\(minutes)") : String("\(minutes)")
+        let secondsString = seconds < 10 ? String("0\(seconds)") : String("\(seconds)")
+        
+        return "\(hours):\(minutesString):\(secondsString)"
+    }
+    
+    private var navigationTitlteDateFormat: Date.FormatStyle {
+        Date.FormatStyle()
+            .year(.omitted)
+            .month(.abbreviated)
+            .weekday(.abbreviated)
+            .day(.defaultDigits)
+            .hour(.omitted)
+            .minute(.omitted)
     }
     
     private var averageHeartRateFormatted: String {
@@ -25,7 +41,11 @@ struct WorkoutDetailView: View {
                     .padding()
                 statistics
                     .padding(.horizontal)
+                WorkoutDetailMapView()
+                    .padding(.horizontal)
             }
+            .navigationTitle(workout.endDate.formatted(navigationTitlteDateFormat))
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     

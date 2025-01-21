@@ -14,24 +14,9 @@ class HealthKitManager {
     
     var walkWorkouts: [HKWorkout] = []
     
-    // W.I.P
-//    func retrieveWorkoutRoute(for workout: HKWorkout) async {
-//        guard let store = healthStore else {
-//            logger.warning("retrieveWorkoutRoute(): healthStore is nil. Returning from the method with no results.")
-//            return
-//        }
-//        
-//        let workoutObjectPredicate = HKQuery.predicateForObjects(from: workout)
-//        
-//        let routeQuery = HKAnchoredObjectQueryDescriptor(predicates: [.workoutRoute(workoutObjectPredicate)], anchor: nil)
-//        
-//        let updateQueue = routeQuery.results(for: store)
-//        
-//        let updateTask = Task {
-//            for try await update in updateQueue {
-//                print(update)
-//            }
-//        }
+//    W.I.P
+//    func retrieveWorkoutRoute(for workout: HKWorkout){
+//       
 //    }
     
     func retrieveWalkWorkouts() async {
