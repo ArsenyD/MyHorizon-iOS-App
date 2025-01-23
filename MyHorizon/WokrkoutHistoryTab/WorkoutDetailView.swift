@@ -1,10 +1,14 @@
 import SwiftUI
 import HealthKit
+import MapKit
 
 struct WorkoutDetailView: View {
     
     @Environment(HealthKitManager.self) var healthKitManager
     let workout: HKWorkout
+
+    @State private var workoutLocations: [CLLocation] = []
+    @State private var mapCameraPositon: MapCameraPosition = .automatic
     
     private var walkDurationFormatted: String {
         let hours = Int(workout.measuredWalkDuration.converted(to: .hours).value)
@@ -38,14 +42,18 @@ struct WorkoutDetailView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 header
-                    .padding()
                 statistics
-                    .padding(.horizontal)
-                WorkoutDetailMapView()
-                    .padding(.horizontal)
+                workoutMap
             }
             .navigationTitle(workout.endDate.formatted(navigationTitlteDateFormat))
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .task {
+            do {
+                workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
+            } catch {
+                print("Error occured while retrieving workout route: \(error)")
+            }
         }
     }
     
@@ -166,6 +174,27 @@ struct WorkoutDetailView: View {
             Text(averageHeartRateFormatted)
                 .foregroundStyle(.red)
                 .font(.title)
+        }
+    }
+    
+    var workoutMap: some View {
+        VStack(alignment: .leading) {
+            Text("Map")
+                .bold()
+                .font(.title2)
+            Map {
+                if workoutLocations.isEmpty {} else {
+                    Annotation("Starting Point", coordinate: workoutLocations[0].coordinate) {
+                        Circle()
+                            .fill(.red)
+                            .frame(width: 10, height: 10)
+                    }
+                }
+            }
+            .frame(width: 350, height: 250)
+            .padding(15)
+            .background(in: RoundedRectangle(cornerRadius: 8))
+            .backgroundStyle(.bar)
         }
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import HealthKit
+import MapKit
 import OSLog
 
 
@@ -9,20 +10,46 @@ private let logger = Logger(subsystem: "com.ArsenyD.MyHorizon", category: "Healt
 class HealthKitManager {
     private var healthStore: HKHealthStore?
     private let requiredHKTypes: Set = [
-        HKQuantityType.workoutType()
+        HKQuantityType.workoutType(),
+        HKSeriesType.workoutRoute()
     ]
     
     var walkWorkouts: [HKWorkout] = []
     
 //    W.I.P
-//    func retrieveWorkoutRoute(for workout: HKWorkout){
-//       
-//    }
+    func retrieveWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocation] {
+        guard let store = self.healthStore else {
+            fatalError("retrieveWorkoutRoute(): healthStore is nil. App is in invalid state.")
+        }
+        
+        var workoutRouteLocations: [CLLocation] = []
+        
+        let walkingObjectQuery = HKQuery.predicateForObjects(from: workout)
+        let routeQuery = HKAnchoredObjectQueryDescriptor(predicates: [.workoutRoute(walkingObjectQuery)], anchor: nil)
+        
+        let queryResults = routeQuery.results(for: store)
+        
+        for try await result in queryResults {
+            let routeSamples = result.addedSamples
+            for routeSample in routeSamples {
+                let routeQueryDescriptor = HKWorkoutRouteQueryDescriptor(routeSample)
+                let locations = routeQueryDescriptor.results(for: store)
+                
+                for try await location in locations {
+                    workoutRouteLocations.append(location)
+                    print(workoutRouteLocations.count)
+                    return workoutRouteLocations
+                }
+            }
+        }
+        
+        return workoutRouteLocations
+    }
     
+    // Try using HKAnchoredQueryDescriptor instead of HKSampleQueryDescriptor
     func retrieveWalkWorkouts() async {
         guard let store = healthStore else {
-            logger.warning("retrieveWalkWorkouts(): healthStore is nil. Returning from the method with no results.")
-            return
+            fatalError("retrieveWalkWorkouts(): healthStore is nil. App is in invalid state.")
         }
         
         let onlyWalkWorkouts = HKQuery.predicateForWorkouts(with: .walking)
