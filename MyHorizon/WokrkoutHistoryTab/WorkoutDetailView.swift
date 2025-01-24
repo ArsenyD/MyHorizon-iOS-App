@@ -48,11 +48,13 @@ struct WorkoutDetailView: View {
             .navigationTitle(workout.endDate.formatted(navigationTitlteDateFormat))
             .navigationBarTitleDisplayMode(.inline)
         }
-        .task {
-            do {
-                workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
-            } catch {
-                print("Error occured while retrieving workout route: \(error)")
+        .onAppear {
+            Task {
+                do {
+                    self.workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
+                } catch {
+                    fatalError("Error while fetching workout route: \(error)")
+                }
             }
         }
     }
@@ -177,24 +179,28 @@ struct WorkoutDetailView: View {
         }
     }
     
+    @ViewBuilder
     var workoutMap: some View {
-        VStack(alignment: .leading) {
-            Text("Map")
-                .bold()
-                .font(.title2)
-            Map {
-                if workoutLocations.isEmpty {} else {
-                    Annotation("Starting Point", coordinate: workoutLocations[0].coordinate) {
-                        Circle()
-                            .fill(.red)
-                            .frame(width: 10, height: 10)
+        if workoutLocations.isEmpty {
+            ProgressView()
+        } else {
+            VStack(alignment: .leading) {
+                Text("Map")
+                    .bold()
+                    .font(.title2)
+                Map {
+                    ForEach(workoutLocations, id: \.self) { location in
+                        Marker(coordinate: location.coordinate) {
+                            Circle()
+                                .frame(width: 5, height: 5)
+                        }
                     }
                 }
+                .frame(width: 350, height: 250)
+                .padding(15)
+                .background(in: RoundedRectangle(cornerRadius: 8))
+                .backgroundStyle(.bar)
             }
-            .frame(width: 350, height: 250)
-            .padding(15)
-            .background(in: RoundedRectangle(cornerRadius: 8))
-            .backgroundStyle(.bar)
         }
     }
 }

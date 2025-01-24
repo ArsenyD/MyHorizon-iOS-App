@@ -16,34 +16,48 @@ class HealthKitManager {
     
     var walkWorkouts: [HKWorkout] = []
     
-//    W.I.P
+    //    W.I.P
     func retrieveWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocation] {
         guard let store = self.healthStore else {
             fatalError("retrieveWorkoutRoute(): healthStore is nil. App is in invalid state.")
         }
         
-        var workoutRouteLocations: [CLLocation] = []
+        // Creating predicate for the workout we need to retrieve the route for
+        let currentWorkoutPredicate = HKQuery.predicateForObjects(from: workout)
         
-        let walkingObjectQuery = HKQuery.predicateForObjects(from: workout)
-        let routeQuery = HKAnchoredObjectQueryDescriptor(predicates: [.workoutRoute(walkingObjectQuery)], anchor: nil)
+        // Creating the anchored query for route fetching
+        let routeSamplesQuery = HKAnchoredObjectQueryDescriptor(predicates: [.workoutRoute(currentWorkoutPredicate)], anchor: nil)
         
-        let queryResults = routeQuery.results(for: store)
+        // starting a long-running query. queryResults is of type HKWorkoutRoute
+        let queryResults = routeSamplesQuery.results(for: store)
         
-        for try await result in queryResults {
-            let routeSamples = result.addedSamples
-            for routeSample in routeSamples {
-                let routeQueryDescriptor = HKWorkoutRouteQueryDescriptor(routeSample)
-                let locations = routeQueryDescriptor.results(for: store)
+        // creating the task
+        let task =  Task {
+            var workoutRouteLocations: [CLLocation] = []
+            
+            for try await result in queryResults {
+                let routeSamples = result.addedSamples
                 
-                for try await location in locations {
-                    workoutRouteLocations.append(location)
-                    print(workoutRouteLocations.count)
-                    return workoutRouteLocations
+                for routeSample in routeSamples {
+                    // creating the route query to access individual locations
+                    let routeQueryDescriptor = HKWorkoutRouteQueryDescriptor(routeSample)
+                    
+                    // starting a route query
+                    let locations = routeQueryDescriptor.results(for: store)
+                    
+                    // accessing individual locations
+                    for try await location in locations {
+                        print(location.coordinate)
+                        workoutRouteLocations.append(location)
+                        print("Count: \(workoutRouteLocations.count) \n")
+                    }
                 }
             }
+            
+            return workoutRouteLocations
         }
         
-        return workoutRouteLocations
+        return try await task.value
     }
     
     // Try using HKAnchoredQueryDescriptor instead of HKSampleQueryDescriptor
