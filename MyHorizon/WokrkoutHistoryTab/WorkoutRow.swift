@@ -5,12 +5,16 @@ struct WorkoutRow: View {
     let date: Date
     
     var body: some View {
-        HStack(alignment: .bottom) {
+        HStack(alignment: .bottom, spacing: 10) {
             iconComponent
             descriptionComponent
-            Spacer()
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             dateComponent
         }
+        .padding(10)
+        .background(in: RoundedRectangle(cornerRadius: 8))
+        .backgroundStyle(.bar)
+        
     }
     
     var iconComponent: some View {
