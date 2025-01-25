@@ -6,8 +6,9 @@ struct WorkoutDetailView: View {
     
     @Environment(HealthKitManager.self) var healthKitManager
     let workout: HKWorkout
-
+    
     @State private var workoutLocations: [CLLocation] = []
+    @State private var isShowingMapSheet = false
     @State private var mapCameraPositon: MapCameraPosition = .automatic
     
     private var walkDurationFormatted: String {
@@ -47,13 +48,12 @@ struct WorkoutDetailView: View {
             }
             .navigationTitle(workout.endDate.formatted(navigationTitlteDateFormat))
             .navigationBarTitleDisplayMode(.inline)
-        }
-        .onAppear {
-            Task {
+            .task {
                 do {
-                    self.workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
+                    workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
+                    print(workoutLocations.count)
                 } catch {
-                    fatalError("Error while fetching workout route: \(error)")
+                    fatalError("error while fetching workout route: \(error)")
                 }
             }
         }
@@ -181,26 +181,41 @@ struct WorkoutDetailView: View {
     
     @ViewBuilder
     var workoutMap: some View {
-        if workoutLocations.isEmpty {
-            ProgressView()
-        } else {
-            VStack(alignment: .leading) {
-                Text("Map")
-                    .bold()
-                    .font(.title2)
+        VStack(alignment: .leading) {
+            Text("Map")
+                .bold()
+                .font(.title2)
+            
+            if !workoutLocations.isEmpty {
                 Map {
-                    ForEach(workoutLocations, id: \.self) { location in
-                        Marker(coordinate: location.coordinate) {
-                            Circle()
-                                .frame(width: 5, height: 5)
-                        }
-                    }
+                    MapCircle(center: workoutLocations.first!.coordinate, radius: CLLocationDistance(10))
+                        .foregroundStyle(.green)
+                        .mapOverlayLevel(level: .aboveLabels)
+                    
+                    MapPolyline(coordinates: workoutLocations.map { $0.coordinate } )
+                        .stroke(.secondary, lineWidth: 5)
+                        .mapOverlayLevel(level: .aboveLabels)
+                    
+                    MapCircle(center: workoutLocations.last!.coordinate, radius: CLLocationDistance(10))
+                        .foregroundStyle(.red)
+                        .mapOverlayLevel(level: .aboveLabels)
                 }
-                .frame(width: 350, height: 250)
-                .padding(15)
-                .background(in: RoundedRectangle(cornerRadius: 8))
-                .backgroundStyle(.bar)
+                .frame(height: 250)
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                mapPlaceholder
             }
         }
+    }
+    
+    var mapPlaceholder: some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(.placeholder)
+            .frame(height: 250)
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .overlay {
+                ProgressView()
+            }
     }
 }

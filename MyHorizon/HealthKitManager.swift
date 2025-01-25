@@ -47,11 +47,13 @@ class HealthKitManager {
                     
                     // accessing individual locations
                     for try await location in locations {
-                        print(location.coordinate)
                         workoutRouteLocations.append(location)
-                        print("Count: \(workoutRouteLocations.count) \n")
+                        print(location.coordinate)
+                        print("count: \(workoutRouteLocations.count)")
                     }
                 }
+                
+                return workoutRouteLocations
             }
             
             return workoutRouteLocations
