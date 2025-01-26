@@ -10,10 +10,7 @@ struct WorkoutRow: View {
             descriptionComponent
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             dateComponent
-        }
-        .padding(10)
-        .background(in: RoundedRectangle(cornerRadius: 8))
-        .backgroundStyle(.bar)
+        } 
         
     }
     
