@@ -8,7 +8,7 @@ struct WorkoutDetailView: View {
     let workout: HKWorkout
     
     @State private var workoutLocations: [CLLocation] = []
-    @State private var isShowingMapSheet = false
+    @State private var workoutLocality: String? = nil
     @State private var mapCameraPositon: MapCameraPosition = .automatic
     
     private var walkDurationFormatted: String {
@@ -51,7 +51,7 @@ struct WorkoutDetailView: View {
             .task {
                 do {
                     workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
-                    print(workoutLocations.count)
+                    workoutLocality = await healthKitManager.convertToCityName(location: workoutLocations.last!)
                 } catch {
                     fatalError("error while fetching workout route: \(error)")
                 }
@@ -77,7 +77,9 @@ struct WorkoutDetailView: View {
                 
                 VStack(alignment: .leading) {
                     Text("\(workout.startDate.formatted(date: .omitted, time: .shortened))—\(workout.endDate.formatted(date: .omitted, time: .shortened))")
-                    Label("N/A", systemImage: "location.fill")
+                    if let workoutLocality {
+                        Label(workoutLocality, systemImage: "location.fill")
+                    }
                 }
                 .imageScale(.small)
                 .font(.callout)
@@ -193,7 +195,7 @@ struct WorkoutDetailView: View {
                         .mapOverlayLevel(level: .aboveLabels)
                     
                     MapPolyline(coordinates: workoutLocations.map { $0.coordinate } )
-                        .stroke(.secondary, lineWidth: 5)
+                        .stroke(.accent, lineWidth: 3)
                         .mapOverlayLevel(level: .aboveLabels)
                     
                     MapCircle(center: workoutLocations.last!.coordinate, radius: CLLocationDistance(10))

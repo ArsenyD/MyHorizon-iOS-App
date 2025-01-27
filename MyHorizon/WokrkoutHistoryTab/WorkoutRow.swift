@@ -4,14 +4,20 @@ struct WorkoutRow: View {
     let distance: Measurement<UnitLength>?
     let date: Date
     
+    private var dateStyle: Date.FormatStyle {
+        Date.FormatStyle()
+            .day(.twoDigits)
+            .month(.twoDigits)
+            .year(.twoDigits)
+    }
+    
     var body: some View {
         HStack(alignment: .bottom, spacing: 10) {
             iconComponent
             descriptionComponent
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             dateComponent
-        } 
-        
+        }
     }
     
     var iconComponent: some View {
@@ -34,7 +40,7 @@ struct WorkoutRow: View {
     }
     
     var dateComponent: some View {
-        Text(date.formatted(date: .numeric, time: .omitted))
+        Text(date.formatted(dateStyle))
             .font(.caption)
             .foregroundStyle(.secondary)
     }

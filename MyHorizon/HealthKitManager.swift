@@ -16,7 +16,6 @@ class HealthKitManager {
     
     var walkWorkouts: [HKWorkout] = []
     
-    //    W.I.P
     func retrieveWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocation] {
         guard let store = self.healthStore else {
             fatalError("retrieveWorkoutRoute(): healthStore is nil. App is in invalid state.")
@@ -81,9 +80,10 @@ class HealthKitManager {
         
         do {
             let results = try await query.result(for: store)
-            logger.log("retrieveWalkWorkouts(): Received \(results.count) results for query.")
+            logger.log("retrieveWalkWorkouts(): Received \(results.count) results.")
             
             guard let walks = results as? [HKWorkout] else {
+                // this should never fail
                 logger.warning("retrieveWalkWorkouts(): Type Casting from [HKSample] to [HKWorkout] failed. Returning from the method with no results.")
                 return
             }
@@ -92,6 +92,17 @@ class HealthKitManager {
             
         } catch {
             logger.warning("retrieveWalkWorkouts(): Query failed. Returning from the method with no results.")
+        }
+    }
+    
+    func convertToCityName(location: CLLocation) async -> String? {
+        // CLGeocoder is a class that is used to convert from coordinates to user-friendly location names and the other way around.
+        let geocoder = CLGeocoder()
+        
+        if let placemarkArray = try? await geocoder.reverseGeocodeLocation(location) {
+            return placemarkArray[0].locality
+        } else {
+            return nil
         }
     }
     
