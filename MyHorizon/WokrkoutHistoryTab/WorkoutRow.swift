@@ -18,6 +18,10 @@ struct WorkoutRow: View {
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             dateComponent
         }
+        .padding(10)
+        .background(in: RoundedRectangle(cornerRadius: 8))
+        .backgroundStyle(.bar)
+        .padding(.horizontal, 5)
     }
     
     var iconComponent: some View {
@@ -33,8 +37,7 @@ struct WorkoutRow: View {
         VStack(alignment: .leading) {
             Text("Outdoor Walk")
             Text(distance?.formatted(.walkingDistance).uppercased() ?? "N/A")
-                .bold()
-                .foregroundStyle(.green)
+                .foregroundStyle(.accent)
                 .font(.title2)
         }
     }

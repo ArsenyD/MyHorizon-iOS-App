@@ -5,17 +5,20 @@ struct WourkoutHistory: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(healthKitManager.walkWorkouts) { walkSession in
-                    NavigationLink {
-                        WorkoutDetailView(workout: walkSession)
-                    } label: {
-                        WorkoutRow(distance: walkSession.measuredDistanceWalkingRunning, date: walkSession.endDate)
+            ScrollView {
+                LazyVStack(spacing: 10) {
+                    ForEach(healthKitManager.walkWorkouts) { walkWorkout in
+                        NavigationLink {
+                            WorkoutDetailView(workout: walkWorkout)
+                        } label: {
+                            WorkoutRow(distance: walkWorkout.measuredDistanceWalkingRunning, date: walkWorkout.endDate)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .navigationTitle("Walk History")
+
                     }
                 }
-                .navigationTitle("Workouts")
             }
-            .listStyle(.plain)
         }
         .task {
             await healthKitManager.retrieveWalkWorkouts()
