@@ -46,6 +46,8 @@ struct WorkoutDetailView: View {
                 statistics
                 workoutMap
             }
+            .padding(.vertical, 5)
+            .padding(.horizontal)
             .navigationTitle(workout.endDate.formatted(navigationTitlteDateFormat))
             .navigationBarTitleDisplayMode(.inline)
             .task {
