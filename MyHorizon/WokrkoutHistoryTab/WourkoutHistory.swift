@@ -20,6 +20,8 @@ struct WourkoutHistory: View {
                                 .buttonStyle(PlainButtonStyle())
                             }
                         } header: {
+                            
+                            // TODO: Align to Navigation Title
                             Text(section.yearAndMonth)
                                 .font(.title2)
                                 .bold()
@@ -30,7 +32,7 @@ struct WourkoutHistory: View {
                     }
                 }
             }
-            .navigationTitle("Workout History")
+            .navigationTitle("Walk Sessions")
         }
         .task {
             await healthKitManager.retrieveWalkWorkouts()

@@ -4,7 +4,7 @@ struct ContentView: View {
     var body: some View {
         TabView {
             Tab("Summary", systemImage: "heart.text.clipboard") {
-                Text("W.I.P")
+                SummaryTab()
             }
             
             Tab("History", systemImage: "figure.run.square.stack") {

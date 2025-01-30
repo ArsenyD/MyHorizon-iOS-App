@@ -10,11 +10,7 @@ struct SummaryTab: View {
     
     var body: some View {
         NavigationStack {
-            NavigationLink  {
-                Text("Hi")
-            } label: {
-                Text("Link")
-            }
+            Text("Work In Progress")
             .navigationTitle("Summary")
             .toolbar {
                 ToolbarItem(placement: .navigation) {
