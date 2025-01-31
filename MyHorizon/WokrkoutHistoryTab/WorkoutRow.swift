@@ -4,6 +4,10 @@ struct WorkoutRow: View {
     let distance: Measurement<UnitLength>?
     let date: Date
     
+    var distanceFormatted: String {
+        distance?.formatted(.walkingDistance).uppercased() ?? "N/A"
+    }
+    
     var body: some View {
         HStack(alignment: .bottom, spacing: 10) {
             iconComponent
@@ -17,6 +21,7 @@ struct WorkoutRow: View {
         .padding(.horizontal, 5)
     }
     
+    // MARK: - Components
     var iconComponent: some View {
         Image(systemName: "figure.walk")
             .imageScale(.large)
@@ -29,7 +34,7 @@ struct WorkoutRow: View {
     var descriptionComponent: some View {
         VStack(alignment: .leading) {
             Text("Outdoor Walk")
-            Text(distance?.formatted(.walkingDistance).uppercased() ?? "N/A")
+            Text(distanceFormatted)
                 .foregroundStyle(.accent)
                 .font(.title)
         }
@@ -41,18 +46,16 @@ struct WorkoutRow: View {
             .foregroundStyle(.secondary)
     }
     
-    // TODO: - Optimize the method to work with different calendars rather than just with gregorian
+    // Method to properly format date for dateComponent.
+    // Either returns explicit "Today"/"Yesterday", date formatted with weekday only (if the workout was in the last 7 days) or date formatted with month, day and year written with 2 digits
     func formattedDate(for date: Date) -> String  {
-        
-        let calendar = Calendar(identifier: .gregorian)
+        let calendar = Calendar.current
         let today = Date()
         
-        // TODO: Figure out how to return "Today" using RelativeFormatStyle(instead of "2 hours ago" for example) instead of returning explicit "Today"
         guard !calendar.isDateInToday(date) else {
             return "Today"
         }
         
-        // TODO: Figure out how to return "Yesterday" using RelativeFormatStyle(instead of "21 hours ago" for example) instead of returning explicit "Yesterday"
         guard !calendar.isDateInYesterday(date) else {
             return "Yesterday"
         }
