@@ -46,18 +46,14 @@ struct WorkoutRow: View {
             .foregroundStyle(.secondary)
     }
     
-    // Method to properly format date for dateComponent.
-    // Either returns explicit "Today"/"Yesterday", date formatted with weekday only (if the workout was in the last 7 days) or date formatted with month, day and year written with 2 digits
+    // MARK: - Method to properly format date for dateComponent.
+    // Either returns explicit "Today", date formatted with weekday only (if the workout was in the last 7 days) or date formatted with month, day and year written with 2 digits
     func formattedDate(for date: Date) -> String  {
         let calendar = Calendar.current
         let today = Date()
         
         guard !calendar.isDateInToday(date) else {
             return "Today"
-        }
-        
-        guard !calendar.isDateInYesterday(date) else {
-            return "Yesterday"
         }
         
         if let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: today) {

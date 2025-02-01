@@ -16,10 +16,9 @@ struct SummaryTab: View {
                 ToolbarItem(placement: .navigation) {
                     Text(Date().formatted(dateFormat))
                         .foregroundStyle(.secondary)
+                        .padding(.top, 20)
                 }
             }
-            .toolbarRole(.navigationStack)
-
         }
     }
 }
