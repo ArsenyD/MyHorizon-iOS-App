@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SummaryTab: View {
+    @Environment(HealthKitManager.self) private var healthManager
+    
     var dateFormat: Date.FormatStyle {
         Date.FormatStyle()
             .weekday(.wide)
@@ -13,15 +15,48 @@ struct SummaryTab: View {
             ScrollView {
                 LazyVStack {
                     HStack {
-                        SummaryWidget(symbol: "figure.walk", heading: "Walking", description: "Weekly Distance", tint: .red)
-                        SummaryWidget(symbol: "figure.walk", heading: "Walking", description: "Weekly Distance", tint: .yellow)
+                        SummaryWidget(
+                            symbol: "figure.walk",
+                            heading: "Distance",
+                            description: "This Week",
+                            value: "17.6KM",
+                            tint: .red
+                        )
+                        SummaryWidget(
+                            symbol: "clock",
+                            heading: "Time Walking",
+                            description: "This Week",
+                            value: "2 H. 36 Min.",
+                            tint: .yellow
+                        )
                     }
+                    
                     HStack {
-                        SummaryWidget(symbol: "figure.walk", heading: "Walking", description: "Weekly Distance", tint: .green)
-                        SummaryWidget(symbol: "figure.walk", heading: "Walking", description: "Weekly Distance", tint: .blue)
+                        SummaryWidget(
+                            symbol: "figure.walk.motion",
+                            heading: "Pace",
+                            description: "This Week",
+                            value: "--'--\"/KM",
+                            tint: .blue
+                        )
+                        SummaryWidget(
+                            symbol: "chevron.up.2",
+                            heading: "Elevation",
+                            description: "This Week",
+                            value: "78M",
+                            tint: .green
+                        )
                     }
                 }
                 .navigationTitle("Summary")
+                .task {
+                    do {
+                        try await healthManager.getStatisticsForDistanceWalkingRunning()
+                    } catch {
+                        fatalError("Statistics Fetching Failed \(error)")
+                    }
+                    
+                }
             }
         }
     }

@@ -11,10 +11,60 @@ class HealthKitManager {
     private var healthStore: HKHealthStore?
     private let requiredHKTypes: Set = [
         HKQuantityType.workoutType(),
-        HKSeriesType.workoutRoute()
+        HKSeriesType.workoutRoute(),
+        HKQuantityType(.distanceWalkingRunning)
     ]
     
     var walkWorkouts: [HKWorkout] = []
+    
+    enum StatisticsInterval {
+        case thisWeek
+        case thisMonth
+        case thisYear
+        
+        var timeInterval: DateInterval {
+            let calendar = Calendar.current
+            
+            switch self {
+            case .thisWeek:
+                return calendar.dateInterval(of: .weekOfMonth, for: .now)!
+            case .thisMonth:
+                return calendar.dateInterval(of: .month, for: .now)!
+            case .thisYear:
+                return calendar.dateInterval(of: .year, for: .now)!
+            }
+        }
+    }
+
+    func getStatisticsForDistanceWalkingRunning() async throws {
+        guard let store = healthStore else { return }
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let today = calendar.startOfDay(for: Date())
+                
+        guard let startDate = calendar.dateInterval(of: .weekOfMonth, for: today)?.start else {
+            fatalError("Unable To Calculate Start Date")
+        }
+        
+        let thisWeek = HKQuery.predicateForSamples(withStart: startDate, end: today)
+        let distance = HKQuantityType(.distanceWalkingRunning)
+        
+        let predicate = HKSamplePredicate.quantitySample(type: distance, predicate: thisWeek)
+        let everyDay = DateComponents(day: 1)
+        
+        let query = HKStatisticsCollectionQueryDescriptor(
+            predicate: predicate,
+            options: .cumulativeSum,
+            anchorDate: today,
+            intervalComponents: everyDay
+        )
+        
+        let result = try await query.result(for: store)
+        let statistics = result.statistics()
+        
+        print(statistics)
+        print(statistics.count)
+    }
     
     func retrieveWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocation] {
         guard let store = self.healthStore else {
@@ -61,7 +111,7 @@ class HealthKitManager {
         return try await task.value
     }
     
-    // Try using HKAnchoredQueryDescriptor instead of HKSampleQueryDescriptor
+    // TODO: Try using HKAnchoredQueryDescriptor instead of HKSampleQueryDescriptor
     func retrieveWalkWorkouts() async {
         guard let store = healthStore else {
             fatalError("retrieveWalkWorkouts(): healthStore is nil. App is in invalid state.")

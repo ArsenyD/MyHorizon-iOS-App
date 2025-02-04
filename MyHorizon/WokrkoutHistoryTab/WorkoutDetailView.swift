@@ -53,7 +53,9 @@ struct WorkoutDetailView: View {
             .task {
                 do {
                     workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
-                    workoutLocality = await healthKitManager.convertToCityName(location: workoutLocations.last!)
+                    workoutLocality = await healthKitManager.convertToCityName(
+                        location: workoutLocations.last!
+                    )
                 } catch {
                     fatalError("error while fetching workout route: \(error)")
                 }

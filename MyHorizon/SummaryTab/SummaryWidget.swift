@@ -4,6 +4,7 @@ struct SummaryWidget: View {
     let symbol: String
     let heading: String
     let description: String
+    let value: String
     let tint: Color
     
     var body: some View {
@@ -18,7 +19,7 @@ struct SummaryWidget: View {
             Group {
                 Text(description)
                     .font(.subheadline)
-                Text("17.16KM")
+                Text(value)
                     .fontDesign(.rounded)
                     .font(.title)
                     .bold()
@@ -41,6 +42,7 @@ struct SummaryWidget: View {
         symbol: "figure.walk",
         heading: "Distance",
         description: "Weekly Distance",
+        value: "17.6KM",
         tint: .red
     )
 }
