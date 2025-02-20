@@ -49,14 +49,6 @@ struct SummaryTab: View {
                     }
                 }
                 .navigationTitle("Summary")
-                .task {
-                    do {
-                        try await healthManager.getStatisticsForDistanceWalkingRunning()
-                    } catch {
-                        fatalError("Statistics Fetching Failed \(error)")
-                    }
-                    
-                }
             }
         }
     }

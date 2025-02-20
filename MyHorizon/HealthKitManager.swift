@@ -9,63 +9,74 @@ private let logger = Logger(subsystem: "com.ArsenyD.MyHorizon", category: "Healt
 @Observable
 class HealthKitManager {
     private var healthStore: HKHealthStore?
+    
+    // types required for authorization
     private let requiredHKTypes: Set = [
         HKQuantityType.workoutType(),
         HKSeriesType.workoutRoute(),
-        HKQuantityType(.distanceWalkingRunning)
+        HKQuantityType(.walkingSpeed)
     ]
     
-    var walkWorkouts: [HKWorkout] = []
-    
-    enum StatisticsInterval {
-        case thisWeek
-        case thisMonth
-        case thisYear
-        
-        var timeInterval: DateInterval {
-            let calendar = Calendar.current
-            
-            switch self {
-            case .thisWeek:
-                return calendar.dateInterval(of: .weekOfMonth, for: .now)!
-            case .thisMonth:
-                return calendar.dateInterval(of: .month, for: .now)!
-            case .thisYear:
-                return calendar.dateInterval(of: .year, for: .now)!
-            }
+    func fetchAverageWalkingSpeed(for workout: HKWorkout) async throws {
+        guard let store = healthStore else {
+            fatalError("healthStore is nil. App is in invalid state.")
         }
+        
+        guard let speedType = HKQuantityType.quantityType(forIdentifier: .walkingSpeed) else {
+            fatalError("shouldn't fail")
+        }
+        
+        let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
+        
+        let query = HKStatisticsQueryDescriptor(predicate: .quantitySample(type: speedType, predicate: predicate), options: .discreteAverage)
+        
+        if let result = try await query.result(for: store) {
+            let averageSpeed = result.averageQuantity()?.doubleValue(for: HKUnit(from: "m/s"))
+            let averagePace = (1.0 / averageSpeed!) * 60.0
+            print("Average speed: \(averageSpeed!), pace: \(averagePace)")
+        } else {
+            throw HKError(.errorNoData)
+        }
+        
+        
     }
-
-    func getStatisticsForDistanceWalkingRunning() async throws {
-        guard let store = healthStore else { return }
-        
-        let calendar = Calendar(identifier: .gregorian)
-        let today = calendar.startOfDay(for: Date())
-                
-        guard let startDate = calendar.dateInterval(of: .weekOfMonth, for: today)?.start else {
-            fatalError("Unable To Calculate Start Date")
+    
+    // MARK: - Walk Workout Data for WorkoutHistory
+    func retrieveWalkWorkouts() async throws -> [HKWorkout]? {
+        guard let store = healthStore else {
+            throw HKError(.errorHealthDataUnavailable)
         }
         
-        let thisWeek = HKQuery.predicateForSamples(withStart: startDate, end: today)
-        let distance = HKQuantityType(.distanceWalkingRunning)
+        let onlyWalkWorkouts = HKQuery.predicateForWorkouts(with: .walking)
         
-        let predicate = HKSamplePredicate.quantitySample(type: distance, predicate: thisWeek)
-        let everyDay = DateComponents(day: 1)
-        
-        let query = HKStatisticsCollectionQueryDescriptor(
-            predicate: predicate,
-            options: .cumulativeSum,
-            anchorDate: today,
-            intervalComponents: everyDay
+        // TODO: Try using HKAnchoredQueryDescriptor instead of HKSampleQueryDescriptor
+        let query = HKSampleQueryDescriptor(
+            predicates: [.sample(type: .workoutType(), predicate: onlyWalkWorkouts)],
+            sortDescriptors: [SortDescriptor(
+                \.endDate,
+                 order: .reverse
+            )],
+            limit: nil
         )
         
-        let result = try await query.result(for: store)
-        let statistics = result.statistics()
-        
-        print(statistics)
-        print(statistics.count)
+        do {
+            let results = try await query.result(for: store)
+            logger.log("retrieveWalkWorkouts(): Received \(results.count) results.")
+            
+            guard let walks = results as? [HKWorkout] else {
+                // this should never fail
+                logger.warning("retrieveWalkWorkouts(): Type Casting from [HKSample] to [HKWorkout] failed. Returning from the method with no results.")
+                return nil
+            }
+            
+            return walks
+        } catch {
+            logger.warning("retrieveWalkWorkouts(): Query failed. Returning from the method with no results.")
+            return nil
+        }
     }
     
+    // MARK: - Retrieving Array of locations for specified workout
     func retrieveWorkoutRoute(for workout: HKWorkout) async throws -> [CLLocation] {
         guard let store = self.healthStore else {
             fatalError("retrieveWorkoutRoute(): healthStore is nil. App is in invalid state.")
@@ -97,65 +108,18 @@ class HealthKitManager {
                     // accessing individual locations
                     for try await location in locations {
                         workoutRouteLocations.append(location)
-                        print(location.coordinate)
-                        print("count: \(workoutRouteLocations.count)")
                     }
                 }
                 
                 return workoutRouteLocations
             }
-            
             return workoutRouteLocations
         }
         
         return try await task.value
     }
     
-    // TODO: Try using HKAnchoredQueryDescriptor instead of HKSampleQueryDescriptor
-    func retrieveWalkWorkouts() async {
-        guard let store = healthStore else {
-            fatalError("retrieveWalkWorkouts(): healthStore is nil. App is in invalid state.")
-        }
-        
-        let onlyWalkWorkouts = HKQuery.predicateForWorkouts(with: .walking)
-        
-        let query = HKSampleQueryDescriptor(
-            predicates: [.sample(type: .workoutType(), predicate: onlyWalkWorkouts)],
-            sortDescriptors: [SortDescriptor(
-                \.endDate,
-                 order: .reverse
-            )],
-            limit: nil
-        )
-        
-        do {
-            let results = try await query.result(for: store)
-            logger.log("retrieveWalkWorkouts(): Received \(results.count) results.")
-            
-            guard let walks = results as? [HKWorkout] else {
-                // this should never fail
-                logger.warning("retrieveWalkWorkouts(): Type Casting from [HKSample] to [HKWorkout] failed. Returning from the method with no results.")
-                return
-            }
-            
-            walkWorkouts = walks
-            
-        } catch {
-            logger.warning("retrieveWalkWorkouts(): Query failed. Returning from the method with no results.")
-        }
-    }
-    
-    func convertToCityName(location: CLLocation) async -> String? {
-        // CLGeocoder is a class that is used to convert from coordinates to user-friendly location names and the other way around.
-        let geocoder = CLGeocoder()
-        
-        if let placemarkArray = try? await geocoder.reverseGeocodeLocation(location) {
-            return placemarkArray[0].locality
-        } else {
-            return nil
-        }
-    }
-    
+    // MARK: - INIT
     init() {
         logger.log("initializing HealthKitManager")
         

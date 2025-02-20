@@ -32,4 +32,18 @@ extension HKWorkout {
         guard let double = self.statistics(for: .init(.heartRate))?.averageQuantity()?.doubleValue(for: HKUnit(from: "count/min")) else { return nil }
         return Int(double)
     }
+    
+    var elevation: Measurement<UnitLength>? {
+        guard let metadata = self.metadata else { return nil }
+        
+        let elevationAscended = metadata[HKMetadataKeyElevationAscended]
+        
+        if let elev = elevationAscended as? HKQuantity {
+            let measurementCM = Measurement<UnitLength>(value: elev.doubleValue(for: HKUnit(from: "cm")), unit: .centimeters)
+            let measurementInMeters = measurementCM.converted(to: .meters)
+            return measurementInMeters
+        } else {
+            return nil
+        }
+    }
 }

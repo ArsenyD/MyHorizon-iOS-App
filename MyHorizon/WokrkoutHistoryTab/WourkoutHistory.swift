@@ -4,6 +4,7 @@ import HealthKit
 struct WourkoutHistory: View {
     @Environment(HealthKitManager.self) var healthKitManager
     @State private var sections: [WorkoutHistorySection] = []
+    @State private var walkWorkouts: [HKWorkout]?
     
     var body: some View {
         NavigationStack {
@@ -35,8 +36,15 @@ struct WourkoutHistory: View {
             .navigationTitle("Walk Sessions")
         }
         .task {
-            await healthKitManager.retrieveWalkWorkouts()
-            sections = createSections(from: healthKitManager.walkWorkouts)
+            do {
+                walkWorkouts = try await healthKitManager.retrieveWalkWorkouts()
+            } catch {
+                fatalError("\(error)")
+            }
+            
+            if let walkWorkouts {
+                sections = createSections(from: walkWorkouts)
+            }
         }
     }
     

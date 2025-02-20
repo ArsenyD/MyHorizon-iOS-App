@@ -39,6 +39,7 @@ struct WorkoutDetailView: View {
         return "\(measuredHeartRate) BPM"
     }
     
+    // MARK: - Body
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -53,9 +54,7 @@ struct WorkoutDetailView: View {
             .task {
                 do {
                     workoutLocations = try await healthKitManager.retrieveWorkoutRoute(for: workout)
-                    workoutLocality = await healthKitManager.convertToCityName(
-                        location: workoutLocations.last!
-                    )
+                    workoutLocality = await convertToCityName(location: workoutLocations.last)
                 } catch {
                     fatalError("error while fetching workout route: \(error)")
                 }
@@ -63,6 +62,7 @@ struct WorkoutDetailView: View {
         }
     }
     
+    // MARK: - Components
     var header: some View {
         HStack {
             Image(systemName: "figure.walk")
@@ -161,7 +161,7 @@ struct WorkoutDetailView: View {
     var elevationGain: some View {
         VStack(alignment: .leading) {
             Text("Elevation Gain")
-            Text("N/A")
+            Text(workout.elevation?.formatted(.elevation).uppercased() ?? "-- M")
                 .foregroundStyle(Color(red: 0.651, green: 0.996, blue: 0.478))
                 .font(.title)
         }
@@ -185,6 +185,7 @@ struct WorkoutDetailView: View {
         }
     }
     
+    // MARK: - Workout Route Map
     @ViewBuilder
     var workoutMap: some View {
         VStack(alignment: .leading) {
@@ -223,5 +224,18 @@ struct WorkoutDetailView: View {
             .overlay {
                 ProgressView()
             }
+    }
+    
+    func convertToCityName(location: CLLocation?) async -> String? {
+        guard let location else { return nil }
+        
+        // CLGeocoder is a class that is used to convert from coordinates to user-friendly location names and the other way around.
+        let geocoder = CLGeocoder()
+        
+        if let placemarkArray = try? await geocoder.reverseGeocodeLocation(location) {
+            return placemarkArray[0].locality
+        } else {
+            return nil
+        }
     }
 }
