@@ -17,28 +17,6 @@ class HealthKitManager {
         HKQuantityType(.walkingSpeed)
     ]
     
-    func fetchAverageWalkingSpeed(for workout: HKWorkout) async throws {
-        guard let store = healthStore else {
-            fatalError("healthStore is nil. App is in invalid state.")
-        }
-        
-        guard let speedType = HKQuantityType.quantityType(forIdentifier: .walkingSpeed) else {
-            fatalError("shouldn't fail")
-        }
-        
-        let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
-        
-        let query = HKStatisticsQueryDescriptor(predicate: .quantitySample(type: speedType, predicate: predicate), options: .discreteAverage)
-        
-        if let result = try await query.result(for: store) {
-            let averageSpeed = result.averageQuantity()?.doubleValue(for: HKUnit(from: "m/s"))
-            let averagePace = (1.0 / averageSpeed!) * 60.0
-            print("Average speed: \(averageSpeed!), pace: \(averagePace)")
-        } else {
-            throw HKError(.errorNoData)
-        }
-    }
-    
     // MARK: - Walk Workout Data for WorkoutHistory
     func retrieveWalkWorkouts() async throws -> [HKWorkout]? {
         guard let store = healthStore else {
