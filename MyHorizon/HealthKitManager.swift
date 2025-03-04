@@ -37,8 +37,6 @@ class HealthKitManager {
         } else {
             throw HKError(.errorNoData)
         }
-        
-        
     }
     
     // MARK: - Walk Workout Data for WorkoutHistory
@@ -91,7 +89,7 @@ class HealthKitManager {
         // starting a long-running query. queryResults is of type HKWorkoutRoute
         let queryResults = routeSamplesQuery.results(for: store)
         
-        // creating the task
+        
         let task =  Task {
             var workoutRouteLocations: [CLLocation] = []
             
@@ -113,6 +111,7 @@ class HealthKitManager {
                 
                 return workoutRouteLocations
             }
+            
             return workoutRouteLocations
         }
         

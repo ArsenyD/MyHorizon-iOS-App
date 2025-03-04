@@ -14,39 +14,34 @@ struct SummaryTab: View {
         NavigationStack {
             ScrollView {
                 LazyVStack {
-                    HStack {
-                        SummaryWidget(
-                            symbol: "figure.walk",
-                            heading: "Distance",
-                            description: "This Week",
-                            value: "17.6KM",
-                            tint: .red
-                        )
-                        SummaryWidget(
-                            symbol: "clock",
-                            heading: "Time Walking",
-                            description: "This Week",
-                            value: "2 H. 36 Min.",
-                            tint: .yellow
-                        )
-                    }
-                    
-                    HStack {
-                        SummaryWidget(
-                            symbol: "figure.walk.motion",
-                            heading: "Pace",
-                            description: "This Week",
-                            value: "--'--\"/KM",
-                            tint: .blue
-                        )
-                        SummaryWidget(
-                            symbol: "chevron.up.2",
-                            heading: "Elevation",
-                            description: "This Week",
-                            value: "78M",
-                            tint: .green
-                        )
-                    }
+                    SummaryWidget(
+                        symbol: "figure.walk",
+                        heading: "Distance",
+                        description: "This Week",
+                        value: "17.6KM",
+                        tint: .red
+                    )
+                    SummaryWidget(
+                        symbol: "clock",
+                        heading: "Time Walking",
+                        description: "This Week",
+                        value: "2 H. 36 Min.",
+                        tint: .yellow
+                    )
+                    SummaryWidget(
+                        symbol: "figure.walk.motion",
+                        heading: "Pace",
+                        description: "This Week",
+                        value: "--'--\"/KM",
+                        tint: .blue
+                    )
+                    SummaryWidget(
+                        symbol: "chevron.up.2",
+                        heading: "Elevation",
+                        description: "This Week",
+                        value: "78M",
+                        tint: .green
+                    )
                 }
                 .navigationTitle("Summary")
             }
@@ -56,4 +51,5 @@ struct SummaryTab: View {
 
 #Preview {
     SummaryTab()
+        .environment(HealthKitManager())
 }

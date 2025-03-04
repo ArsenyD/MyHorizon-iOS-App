@@ -12,9 +12,11 @@ struct WorkoutDetailView: View {
     @State private var mapCameraPositon: MapCameraPosition = .automatic
     
     private var walkDurationFormatted: String {
-        let hours = Int(workout.measuredWalkDuration.converted(to: .hours).value)
-        let minutes = Int(workout.measuredWalkDuration.converted(to: .minutes).value) - hours * 60
-        let seconds = Int(workout.measuredWalkDuration.value) - (minutes * 60) - (hours * 3600)
+        guard let walkDuration = workout.measuredWalkDuration else { return "" }
+        
+        let hours = Int(walkDuration.converted(to: .hours).value)
+        let minutes = Int(walkDuration.converted(to: .minutes).value) - hours * 60
+        let seconds = Int(walkDuration.value) - (minutes * 60) - (hours * 3600)
         
         // TODO: - Refactor later
         let minutesString = minutes < 10 ? String("0\(minutes)") : String("\(minutes)")
@@ -37,6 +39,12 @@ struct WorkoutDetailView: View {
         guard let measuredHeartRate = workout.measuredAverageHeartRate else { return "N/A" }
         
         return "\(measuredHeartRate) BPM"
+    }
+    
+    private var averagePaceFormatted: String {
+        guard let averagePace = workout.averagePace else { return "--'--\"/KM" }
+        
+        return "\(averagePace.0)'\(averagePace.1)\"/KM"
     }
     
     // MARK: - Body
@@ -144,7 +152,7 @@ struct WorkoutDetailView: View {
     var activeCalories: some View {
         VStack(alignment: .leading) {
             Text("Active Calories")
-            Text(workout.measuredActiveCalories?.formatted(.burnedCalories).uppercased() ?? "N/A")
+            Text(workout.measuredActiveCaloriesBurned?.formatted(.burnedCalories).uppercased() ?? "N/A")
                 .foregroundStyle(.pink)
                 .font(.title)
         }
@@ -153,7 +161,7 @@ struct WorkoutDetailView: View {
     var totalCalories: some View {
         VStack(alignment: .leading) {
             Text("Total Calories")
-            Text(workout.measuredTotalCalories?.formatted(.burnedCalories).uppercased() ?? "N/A")
+            Text(workout.measuredTotalCaloriesBurned?.formatted(.burnedCalories).uppercased() ?? "N/A")
                 .foregroundStyle(.pink)
                 .font(.title)
         }
@@ -161,7 +169,7 @@ struct WorkoutDetailView: View {
     var elevationGain: some View {
         VStack(alignment: .leading) {
             Text("Elevation Gain")
-            Text(workout.elevation?.formatted(.elevation).uppercased() ?? "-- M")
+            Text(workout.measuredWalkingElevationGain?.formatted(.elevation).uppercased() ?? "-- M")
                 .foregroundStyle(Color(red: 0.651, green: 0.996, blue: 0.478))
                 .font(.title)
         }
@@ -170,7 +178,7 @@ struct WorkoutDetailView: View {
     var averagePace: some View {
         VStack(alignment: .leading) {
             Text("Avg.Pace")
-            Text("N/A")
+            Text(averagePaceFormatted)
                 .foregroundStyle(.cyan)
                 .font(.title)
         }

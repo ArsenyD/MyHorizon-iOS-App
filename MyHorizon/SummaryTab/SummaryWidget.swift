@@ -28,7 +28,7 @@ struct SummaryWidget: View {
             .padding(.horizontal, 8)
             WidgetChart()
                 .foregroundStyle(tint)
-                .padding([.horizontal, .bottom], 8)
+                .padding([.horizontal, .bottom], 10)
         }
         .frame(minWidth: 0, maxWidth: .infinity)
         .frame(height: 170)
