@@ -14,7 +14,7 @@
 		7F37F5BC2D32ABA4008FBA13 /* Exceptions for "MyHorizon" folder in "MyHorizon" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 7F16017D2D2962AF00CCACEA /* MyHorizon */;
 		};
@@ -262,14 +262,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MyHorizon/MyHorizon.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyHorizon/Resources/MyHorizon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MyHorizon/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"MyHorizon/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = W88579NAWQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MyHorizon/Info.plist;
+				INFOPLIST_FILE = MyHorizon/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "My Horizon";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs to get acces to your workouts in order to properly display data.";
@@ -301,14 +301,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MyHorizon/MyHorizon.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyHorizon/Resources/MyHorizon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MyHorizon/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"MyHorizon/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = W88579NAWQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MyHorizon/Info.plist;
+				INFOPLIST_FILE = MyHorizon/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "My Horizon";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs to get acces to your workouts in order to properly display data.";

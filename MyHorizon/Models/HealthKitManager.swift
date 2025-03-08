@@ -4,17 +4,16 @@ import MapKit
 import OSLog
 
 
-private let logger = Logger(subsystem: "com.ArsenyD.MyHorizon", category: "HealthKitManager")
+fileprivate let logger = Logger(subsystem: Logger.subsystem, category: Logger.Category.healthKitManager.rawValue)
 
 @Observable
 class HealthKitManager {
-    private var healthStore: HKHealthStore?
+    private(set) var healthStore: HKHealthStore?
     
     // types required for authorization
     private let requiredHKTypes: Set = [
         HKQuantityType.workoutType(),
-        HKSeriesType.workoutRoute(),
-        HKQuantityType(.walkingSpeed)
+        HKSeriesType.workoutRoute()
     ]
     
     // MARK: - Walk Workout Data for WorkoutHistory

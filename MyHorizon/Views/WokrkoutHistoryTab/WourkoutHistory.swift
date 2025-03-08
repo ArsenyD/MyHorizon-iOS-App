@@ -67,13 +67,15 @@ struct WourkoutHistory: View {
     }
     
     func createSections(from workouts: [HKWorkout]) -> [WorkoutHistorySection] {
+        guard !workouts.isEmpty else { return [] }
+        
         var sections: [WorkoutHistorySection] = []
-        var workoutsArray = workouts
+        var workoutsCopy = workouts
         let calendar = Calendar(identifier: .gregorian)
         
         repeat {
             // defining an anchor date by which the array will be filtered
-            guard let anchorDate = workoutsArray.first?.endDate else { fatalError("It shouldn't fail") }
+            let anchorDate = workoutsCopy.first!.endDate
             
             // filtering the array
             let filteredByAnchor = workouts.filter { calendar.dateComponents([.year, .month], from: $0.endDate) == calendar.dateComponents([.month, .year], from: anchorDate) }
@@ -83,9 +85,9 @@ struct WourkoutHistory: View {
             sections.append(sectionToAdd)
             
             // removing from the origin array
-            workoutsArray.removeAll(where: { calendar.dateComponents([.year, .month], from: $0.endDate) == calendar.dateComponents([.month, .year], from: anchorDate) } )
+            workoutsCopy.removeAll(where: { calendar.dateComponents([.year, .month], from: $0.endDate) == calendar.dateComponents([.month, .year], from: anchorDate) } )
             
-        } while !workoutsArray.isEmpty
+        } while !workoutsCopy.isEmpty
         
         return sections
     }
